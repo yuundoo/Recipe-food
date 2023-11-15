@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\RecipeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,6 +26,11 @@ Route::get('/', function () {
     ]);
 });
 
+Route::get('/', [RecipeController::class, 'index'])->name('recipes.index');
+Route::post('/create', [RecipeController::class, 'store'])->name('recipes.store');
+Route::get('/recipes/{id}', [RecipeController::class, 'show'])->name('recipes.show');
+
+
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
@@ -35,4 +41,6 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+Route::get('/recipes', [RecipeController::class, 'index'])->name('recipes.index');
+
+require __DIR__ . '/auth.php';

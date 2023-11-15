@@ -1,11 +1,13 @@
 <script setup>
 import { ref } from 'vue';
 import { usePage, Link, Head } from '@inertiajs/vue3';
-import Pagination from '@/Components/Pagination.vue';
-import Modal from '@/Components/Modal.vue';
 
 const page = usePage();
-const recipes = ref(page.props.recipes);
+const recipe = ref(page.props.recipe);
+
+
+
+console.log(recipe.value.name);
 const isModalOpen = ref(false);
 const canLogin = ref(false); // 사용자 로그인 상태 여부
 // 사용자 로그인 상태 확인
@@ -50,51 +52,25 @@ if (page.props.auth.user) {
     </header>
 
     <!-- Hero Section -->
-    <section class="py-16 text-white bg-indigo-600" :style="{ backgroundImage: 'url(/images/MainCover.jpg)' }">
+    <section class="py-16 text-white bg-indigo-600" :style="{ backgroundImage: 'url(/images/DetailCover.jpg)' }">
         <div class="container mx-auto text-center">
-            <h1 class="mb-4 text-4xl font-bold">Discover Amazing Recipes</h1>
-            <p class="mb-8 text-lg">Share your favorite recipes and explore new ones.</p>
-            <template v-if="canLogin">
-                <button @click="isModalOpen = true" :isopen="true" class="px-6 py-2 text-lg font-semibold text-indigo-600 transition duration-300 bg-white rounded-full hover:bg-indigo-700">Get Started</button>
-            </template>
-            <template v-else>
-                <Link :href="route('login')" class="px-6 py-2 text-lg font-semibold text-indigo-600 transition duration-300 bg-white rounded-full hover:bg-indigo-700">Get Started</Link>
-            </template>
-           
+            <h1 class="mb-4 text-4xl font-bold">Recipe Details</h1>
+            <p class="mb-8 text-lg">You can check recipe details</p>
         </div>
     </section>
 
-    <!-- Featured Recipes -->
-    <!-- Featured Recipes -->
-  <section class="py-12">
-    <div class="container mx-auto">
-        <div class="flex items-center justify-between mb-8">
-      <h2 class="text-2xl font-semibold">Featured Recipes</h2>
-      <template v-if="canLogin">
-        <button  @click="isModalOpen = true" :isopen="true" class="px-4 py-2 text-white bg-indigo-600 rounded-md hover:bg-indigo-700">Create</button>
-      </template>
-     
-        </div>
-      
-      <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-3">
-    <!-- Featured Recipe Cards Go Here -->
-    <div v-for="(recipe, index) in recipes.data" :key="index" class="overflow-hidden bg-white rounded-lg shadow-md">
-      <img :src="recipe.image_path" :alt="recipe.name" class="object-cover w-full h-40">
-      <div class="p-4">
-        <h3 class="mb-2 text-xl font-semibold">{{ recipe.name }}</h3>
-        <Link :href="route('recipes.show', { id: recipe.id })">View Recipe</Link>
-        <!-- 추가적인 레시피 정보를 표시할 수도 있습니다. -->
-      </div>
-        </div>
-      </div>
-      <!-- 페이지네이션 컨트롤 -->
-      <div class="mt-8">
-        <Pagination :links="recipes.links"></Pagination>
-      </div>
-    </div>
-    </section>
+    <template>
+  <!-- 레시피 정보 -->
+  <div>
+    <h1 class="mb-2 text-3xl font-semibold">{{ recipe.name }}</h1>
+    <p class="text-gray-600">{{ recipe.description }}</p>
+  </div>
 
-    <Modal :isOpen="isModalOpen" @close="isModalOpen = false" />
+  <!-- 이미지 표시 -->
+  <img :src="recipe.image_path" :alt="recipe.name" class="w-full h-auto mt-4 rounded-lg">
+</template>
+
+   
 
     <!-- Footer -->
     <footer class="py-6 text-white bg-gray-900">
