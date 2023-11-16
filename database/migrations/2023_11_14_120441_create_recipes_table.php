@@ -19,6 +19,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->nullable(); // 작성자 ID (외래 키)
             $table->string('name'); // 레시피 이름
+            $table->integer('average_rating')->nullable(); // 평균 별점
             $table->text('ingredients'); // 재료
             $table->text('description'); // 레시피 설명
             $table->string('image_name')->nullable();

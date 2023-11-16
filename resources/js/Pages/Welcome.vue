@@ -8,11 +8,15 @@ const page = usePage();
 const recipes = ref(page.props.recipes);
 const isModalOpen = ref(false);
 const canLogin = ref(false); // 사용자 로그인 상태 여부
+
+
+
 // 사용자 로그인 상태 확인
 if (page.props.auth.user) {
   canLogin.value = true;
 }
 </script>
+
 
 <template>
     <Head title="Welcome" />
@@ -30,7 +34,7 @@ if (page.props.auth.user) {
     <header class="bg-white shadow">
         <div class="container py-4 mx-auto">
             <div class="flex items-center justify-between">
-                <a href="#" class="text-2xl font-semibold text-indigo-600">Recipe Sharing</a>
+              <Link href=# class="text-2xl font-semibold text-indigo-600">Recipe Sharing</Link>
                 <nav>
                     <ul class="flex space-x-6">
               <template v-if="canLogin">
@@ -71,7 +75,7 @@ if (page.props.auth.user) {
         <div class="flex items-center justify-between mb-8">
       <h2 class="text-2xl font-semibold">Featured Recipes</h2>
       <template v-if="canLogin">
-        <button  @click="isModalOpen = true" :isopen="true" class="px-4 py-2 text-white bg-indigo-600 rounded-md hover:bg-indigo-700">Create</button>
+        <button  @click="isModalOpen = true" :isOpen="true" class="px-4 py-2 text-white bg-indigo-600 rounded-md hover:bg-indigo-700">Create</button>
       </template>
      
         </div>

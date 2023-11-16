@@ -5,7 +5,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\RecipeController;
-
+use App\Http\Controllers\CommentController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -29,6 +29,9 @@ Route::get('/', function () {
 Route::get('/', [RecipeController::class, 'index'])->name('recipes.index');
 Route::post('/create', [RecipeController::class, 'store'])->name('recipes.store');
 Route::get('/recipes/{id}', [RecipeController::class, 'show'])->name('recipes.show');
+Route::get('/recipes', [RecipeController::class, 'index'])->name('recipes.index');
+Route::post('/comments/store', [CommentController::class, 'store'])->name('comments.store');
+Route::get('/comments/{id}', [CommentController::class, 'show'])->name('comments.show');
 
 
 Route::get('/dashboard', function () {
@@ -41,6 +44,6 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::get('/recipes', [RecipeController::class, 'index'])->name('recipes.index');
+
 
 require __DIR__ . '/auth.php';

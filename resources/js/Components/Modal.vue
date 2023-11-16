@@ -110,26 +110,12 @@
 
       // 여기서 formData를 서버로 보내는 로직을 추가하면 됩니다.
       router.post('/create', formData)
-        .then(response => {
-          if (response.status === 201) {
-            VueToast.open({
-              message: 'Recipe가 성공적으로 생성되었습니다.',
-              type: 'success', // 'success', 'error', 'info' 등 메시지 유형 설정
-              duration: 5000, // 메시지가 표시되는 기간 (밀리초)
-            });
-            this.closeModal();
-            // 성공 메시지를 표시할 수 있습니다.
-          }
-        })
-        .catch(error => {
-          // 오류 처리 로직을 추가하세요.
-          console.error('Error:', error);
-          VueToast.open({
-            message: 'Recipe 생성 중 오류가 발생했습니다.',
-            type: 'error',
-            duration: 5000,
-          });
-        });
+        this.name = ''
+        this.ingredients = ''
+        this.description = ''
+        this.image = ''
+
+        this.closeModal();
     },
   },
 };

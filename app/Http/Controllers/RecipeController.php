@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Recipe;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Storage;
+use App\Models\Comment;
 
 class RecipeController extends Controller
 {
@@ -26,10 +27,11 @@ class RecipeController extends Controller
 
     public function show($id)
     {
-        $recipe = Recipe::findOrFail($id);
+        $recipes = Recipe::findOrFail($id);
+
 
         return Inertia::render('RecipeDetail', [
-            'recipe' => $recipe,
+            'recipes' => $recipes,
         ]);
     }
 
