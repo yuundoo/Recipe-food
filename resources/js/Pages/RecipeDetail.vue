@@ -1,35 +1,56 @@
 <script setup>
-import { ref } from 'vue';
-import { usePage, Link, Head } from '@inertiajs/vue3';
-import CommentModal from '@/Components/CommentModal.vue';
+import { ref, computed } from 'vue';
+import { usePage, Link, Head, router } from '@inertiajs/vue3';
 
 const page = usePage();
 const recipe = ref(page.props.recipes);
 defineProps({recipe : Object})
-const comment = ref(page.props.comments);
-const openModal = () => {
-  isModalOpen.value = true;
-};
-
-const closeModal = () => {
-  isModalOpen.value = false;
-};
-
-const isModalOpen = ref(false);
+const comments = ref(page.props.comments);
+const showCommentForm = ref(false);
+const textarea = ref(null);
+const commentStory = ref('')
+const textareaInput = (e) => {
+      // textarea 높이 조정
+      e.target.style.height = 'auto';
+      e.target.style.height = `${e.target.scrollHeight}px`;
+    };
 const canLogin = ref(false); // 사용자 로그인 상태 여부
 // 사용자 로그인 상태 확인
 if (page.props.auth.user) {
   canLogin.value = true;
 }
+
+const closeMessageBox = () => {
+  showCommentForm.value = false
+  commentStory.value = ''
+}
+
+const submitComment = () => {
+  if (!commentStory.value) return
+
+  const formData = new FormData()
+
+  formData.append('commentStory', commentStory.value)
+  router.post('/comments/store', formData);
+  
+  showCommentForm.value = false; // 댓글 제출 후 폼 숨기기
+  commentStory.value = ''; // 댓글 제출 후 댓글 입력란 비우기
+ 
+};
+
 </script>
+
+
 
 <template>
   <!-- Header -->
   <Head title="Detail" />
-
+  <head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
+  </head>
   <header class="bg-white shadow">
     <div class="container flex items-center justify-between py-4 mx-auto">
-      <Link href="#" class="text-2xl font-semibold text-indigo-600">Recipe Sharing</Link>
+      <Link href="/" class="text-2xl font-semibold text-indigo-600">Recipe Sharing</Link>
       <nav>
         <ul class="flex space-x-6">
           <template v-if="canLogin">
@@ -78,35 +99,56 @@ if (page.props.auth.user) {
     >
   </div>
 
-  <!-- 댓글 버튼 -->
-  <div class="container p-5 mx-auto mt-8 text-center">
-    <button @click="openModal"  class="px-4 py-2 text-white bg-indigo-600 rounded-md hover:bg-indigo-700">
-      Comments 
-    </button>
+<!-- 댓글 버튼 -->
+<div class="container p-3 mx-auto mt-8 text-center">
+    <div class="flex justify-center space-x-4">
+      <!-- Like button -->
+      <button class="px-4 py-2 text-gray-700 bg-gray-200 rounded hover:bg-gray-300 focus:outline-none">
+        <i class="fas fa-thumbs-up"></i> Like
+      </button>
+      <!-- Comment button -->
+      <button @click="showCommentForm = !showCommentForm" class="px-4 py-2 text-gray-700 bg-gray-200 rounded hover:bg-gray-300 focus:outline-none">
+        <i class="fas fa-comment"></i> Comments
+      </button>
+      <!-- Share button -->
+      <button class="px-4 py-2 text-gray-700 bg-gray-200 rounded hover:bg-gray-300 focus:outline-none">
+        <i class="fas fa-share"></i> Share
+      </button>
+    </div>
+  </div>
+  
+  <!-- Comment Form -->
+  <div v-if="showCommentForm" class="container mx-auto mt-4">
+    <form @submit.prevent="submitComment" class="max-w-xl mx-auto">
+      <textarea v-model="commentStory" :onInput="textareaInput" placeholder="Write a comment..." class="w-full px-3 py-2 text-gray-700 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" rows="4"></textarea>
+      
+      <button type="submit" :disabled="!commentStory" class="px-4 py-2 mt-3 text-white bg-blue-500 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+        Post Comment
+      </button>
+    </form>
   </div>
 
-  <CommentModal :isOpen="isModalOpen" @closeModal="closeModal" />
-
-  <template>
-  
-
-    <!-- 댓글 목록 -->
-   
-      <div class="mb-4">
-        <h2 class="mb-2 text-xl font-semibold">댓글</h2>
-        <div v-for="commentItem in comment" :key="commentItem.id" class="mb-2">
-          <!-- 사용자 이름 -->
-          <div class="text-lg font-semibold">{{ commentItem.name }}</div>
-          <!-- 댓글 내용 -->
-          <div class="text-gray-700">{{ commentItem.CommentStory }}</div>
-        </div>
+  <div class="max-w-2xl mx-auto">
+    <div v-for="comment in comments"  :key="comment.id" class="p-4 mb-4 bg-white rounded shadow">
+      <div class="mb-2">
+        <span class="text-sm font-semibold text-gray-900">{{ comment.name }}</span>
+        <span class="text-xs text-gray-500">{{ comment.timestamp }}</span>
       </div>
-   
-
-    
-  
-</template>
-
+      <p class="mb-4 text-gray-700">
+        {{ comment.commentStory }}
+      </p>
+      <div class="flex items-center space-x-2">
+        <button class="flex items-center px-2 py-1 text-gray-700 bg-gray-100 rounded hover:bg-gray-200 focus:outline-none">
+          <i class="mr-1 fas fa-heart"></i>
+          <span>{{ comment.likes }}</span>
+        </button>
+        <button class="flex items-center px-2 py-1 text-gray-700 bg-gray-100 rounded hover:bg-gray-200 focus:outline-none">
+          <i class="mr-1 fas fa-comment"></i>
+          <span>{{ comment.comments }}</span>
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- Footer -->
   <footer class="py-6 text-white bg-gray-900">

@@ -15,33 +15,24 @@ class CommentController extends Controller
     {
         $validator = Validator::make(request()->all(), [
             'commentStory' => 'required|max:255',
-            'rating' => 'required|numeric|min:1|max:5',
+
         ]);
         if ($validator->fails()) {
-            return redirect()->back();
-        } else if (Auth::check()) {
-
-            Comment::create([
-                'user_id' => request()->user_id,
-                'name' => Auth::user()->name,
-                'rating' => request()->rating,
-                'commentStory' => request()->commentStory
-            ]);
-            // 평균 평점 업데이트 로직 추가
-            $averageRating = Comment::where('recipe_id', request()->recipe_id)->avg('rating');
-            // 평균 평점을 recipes 테이블에 저장
-            Recipe::where('id', request()->recipe_id)->update(['average_rating' => $averageRating]);
-
-            return redirect()->back();
+            return redirect()->back()->withErrors($validator);
         } else {
-            return redirect()->back()->with('error', '로그인이 필요합니다.');
+            $comment = new Comment();
+            $comment->user_id = Auth::user()->id;
+            $comment->name = Auth::user()->name;
+            $comment->commentStory = $request->commentStory;
+            $comment->save();
+
+            return redirect()->back();
         }
     }
 
     public function show($id)
     {
         $comments = Comment::findOrFail($id);
-
         return Inertia::render('RecipeDetail', [
             'comments' => $comments,
         ]);

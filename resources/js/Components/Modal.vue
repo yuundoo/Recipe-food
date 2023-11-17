@@ -53,8 +53,6 @@
   <script>
   import { router } from '@inertiajs/vue3';
   import { ref } from 'vue';
-  import VueToast from 'vue-toast-notification'; // vue-toast-notification 라이브러리 추가
-  import 'vue-toast-notification/dist/theme-sugar.css'; // 테마 스타일 추가
   
   export default {
     props: {
@@ -90,6 +88,10 @@
       closeModal() {
         // 모달을 닫는 로직
         this.$emit('close');
+        this.name = ''
+        this.ingredients = ''
+        this.description = ''
+        this.image = null
       },
       handleImageUpload(event) {
         // 이미지 업로드 처리 로직
@@ -109,11 +111,11 @@
       formData.append('image', this.image);
 
       // 여기서 formData를 서버로 보내는 로직을 추가하면 됩니다.
-      router.post('/create', formData)
+        router.post('/create', formData)
         this.name = ''
         this.ingredients = ''
         this.description = ''
-        this.image = ''
+        this.image = null
 
         this.closeModal();
     },

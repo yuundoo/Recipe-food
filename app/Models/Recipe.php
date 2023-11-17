@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use App\Models\Comment;
 
 use App\Models\User;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Recipe extends Model
 {
@@ -26,10 +27,5 @@ class Recipe extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
-    }
-
-    public function comments(): Relation
-    {
-        return $this->hasMany(Comment::class);
     }
 }

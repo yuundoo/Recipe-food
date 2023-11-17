@@ -29,7 +29,6 @@ class RecipeController extends Controller
     {
         $recipes = Recipe::findOrFail($id);
 
-
         return Inertia::render('RecipeDetail', [
             'recipes' => $recipes,
         ]);
